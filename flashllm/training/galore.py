@@ -6,7 +6,7 @@ reducing optimizer state memory from O(mn) to O(mr + nr) where r << min(m,n).
 Reference: https://arxiv.org/abs/2403.03507
 """
 
-from typing import Any, Dict, List, Optional, Tuple
+from typing import Dict, List, Optional, Tuple
 
 import torch
 from torch.optim import Optimizer

@@ -1,13 +1,12 @@
 """FlashLLM — Main model wrapper for HuggingFace causal language models."""
 
-from typing import Dict, List, Optional, Union
+from typing import Dict, List, Optional
 
 import torch
-import torch.nn as nn
 from transformers import AutoModelForCausalLM, AutoTokenizer, PreTrainedModel, PreTrainedTokenizer
 
 from flashllm.utils.logger import get_logger
-from flashllm.utils.model_utils import count_parameters, estimate_memory
+from flashllm.utils.model_utils import count_parameters
 
 logger = get_logger(__name__)
 

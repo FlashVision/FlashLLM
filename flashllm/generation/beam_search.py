@@ -1,7 +1,7 @@
 """Beam search decoding for text generation."""
 
 from dataclasses import dataclass, field
-from typing import List, Optional, Tuple
+from typing import List, Optional
 
 import torch
 import torch.nn.functional as F
@@ -57,7 +57,6 @@ class BeamSearch:
             List of beam hypotheses sorted by score.
         """
         device = input_ids.device
-        batch_size = 1
 
         beam_input_ids = input_ids.repeat(self.num_beams, 1)
         beam_scores = torch.zeros(self.num_beams, device=device)

@@ -1,6 +1,5 @@
 """DataLoader utilities for LLM training."""
 
-from typing import Optional
 
 from torch.utils.data import DataLoader, Dataset, random_split
 

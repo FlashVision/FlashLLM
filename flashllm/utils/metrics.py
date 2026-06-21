@@ -1,7 +1,7 @@
 """Evaluation metrics for language models."""
 
 import math
-from typing import Dict, List, Optional
+from typing import Dict, List
 
 
 def compute_perplexity(avg_loss: float) -> float:

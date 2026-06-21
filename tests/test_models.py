@@ -1,11 +1,9 @@
 """Unit tests for model components."""
 
-import pytest
 import torch
 
 from flashllm.nn import RMSNorm, SwiGLU, RotaryEmbedding
 from flashllm.models.lora import LoRALinear
-from flashllm.generation.sampler import Sampler
 from flashllm.generation.kv_cache import KVCache
 
 

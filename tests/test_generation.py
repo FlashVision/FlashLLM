@@ -1,6 +1,5 @@
 """Unit tests for generation components."""
 
-import pytest
 import torch
 
 from flashllm.generation.sampler import Sampler

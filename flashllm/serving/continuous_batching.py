@@ -7,9 +7,8 @@ at each decoding iteration, maximizing GPU utilization.
 import time
 from dataclasses import dataclass, field
 from enum import Enum, auto
-from typing import Dict, List, Optional, Tuple
+from typing import Dict, List, Optional
 
-import torch
 
 from flashllm.utils.logger import get_logger
 
@@ -158,7 +157,6 @@ class ContinuousBatcher:
         available_slots = self.max_num_seqs
 
         running_tokens = 0
-        still_running = []
         for seq in self._running:
             blocks_needed = (seq.total_len + block_size - 1) // block_size
             if blocks_needed <= num_free_blocks and available_slots > 0:

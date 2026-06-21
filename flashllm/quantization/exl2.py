@@ -4,9 +4,8 @@ EXL2 (ExLlamaV2) uses a per-layer adaptive bitrate that allocates more
 bits to sensitive layers and fewer bits to robust ones.
 """
 
-import math
 from pathlib import Path
-from typing import Dict, List, Optional, Tuple
+from typing import Dict, List
 
 import torch
 import torch.nn as nn

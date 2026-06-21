@@ -1,6 +1,6 @@
 """Predictor for text generation, chat, and completion."""
 
-from typing import Dict, Generator, List, Optional, Union
+from typing import Dict, Generator, List, Optional
 
 import torch
 

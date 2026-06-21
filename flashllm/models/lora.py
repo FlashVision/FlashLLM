@@ -5,7 +5,6 @@ from typing import List, Optional
 
 import torch
 import torch.nn as nn
-import torch.nn.functional as F
 
 from flashllm.utils.logger import get_logger
 

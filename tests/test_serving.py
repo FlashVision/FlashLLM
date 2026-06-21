@@ -5,7 +5,7 @@ import torch
 
 from flashllm.serving.vllm_engine import MemoryPool, BlockTable, PagedKVCache
 from flashllm.serving.continuous_batching import (
-    ContinuousBatcher, SequenceRequest, SequenceStatus,
+    ContinuousBatcher, SequenceStatus,
 )
 from flashllm.serving.prefix_cache import PrefixCache
 

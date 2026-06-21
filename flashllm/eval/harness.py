@@ -1,15 +1,13 @@
 """Evaluation harness for LLMs — MMLU, HumanEval, MT-Bench task loaders and scoring."""
 
-import json
 import re
 import time
 from abc import ABC, abstractmethod
 from dataclasses import dataclass, field
 from pathlib import Path
-from typing import Any, Dict, List, Optional, Tuple
+from typing import Any, Dict, List, Optional
 
 import torch
-import torch.nn.functional as F
 
 from flashllm.utils.logger import get_logger
 

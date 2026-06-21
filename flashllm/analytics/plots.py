@@ -1,7 +1,7 @@
 """Plotting utilities for training metrics and benchmarks."""
 
 from pathlib import Path
-from typing import Dict, List, Optional
+from typing import Dict, List
 
 
 def plot_training_loss(
@@ -56,13 +56,13 @@ def plot_benchmark_comparison(
 
     fig, (ax1, ax2) = plt.subplots(1, 2, figsize=(14, 6))
 
-    bars1 = ax1.barh(model_names, tokens_per_sec, color="#4CAF50")
+    ax1.barh(model_names, tokens_per_sec, color="#4CAF50")
     ax1.set_xlabel("Tokens/sec")
     ax1.set_title("Throughput")
     ax1.spines["top"].set_visible(False)
     ax1.spines["right"].set_visible(False)
 
-    bars2 = ax2.barh(model_names, memory_mb, color="#FF9800")
+    ax2.barh(model_names, memory_mb, color="#FF9800")
     ax2.set_xlabel("Memory (MB)")
     ax2.set_title("Peak Memory Usage")
     ax2.spines["top"].set_visible(False)

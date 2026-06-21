@@ -68,7 +68,7 @@ class LabelSmoothedCrossEntropy(nn.Module):
         labels_flat = shift_labels.view(-1)
 
         log_probs = F.log_softmax(logits_flat, dim=-1)
-        vocab_size = logits_flat.size(-1)
+        logits_flat.size(-1)
 
         nll_loss = F.nll_loss(log_probs, labels_flat, ignore_index=self.ignore_index, reduction="mean")
         smooth_loss = -log_probs.mean(dim=-1)

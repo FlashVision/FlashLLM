@@ -7,7 +7,7 @@ CPU inference with llama.cpp and related runtimes.
 import struct
 from enum import IntEnum
 from pathlib import Path
-from typing import Any, Dict, List, Optional, Tuple
+from typing import Any, List, Tuple
 
 import torch
 import numpy as np

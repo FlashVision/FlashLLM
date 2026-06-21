@@ -1,7 +1,6 @@
 """Model profiling utilities — memory, compute, per-layer analysis."""
 
-import time
-from typing import Dict, List, Optional
+from typing import Dict, List
 
 import torch
 import torch.nn as nn

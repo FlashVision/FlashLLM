@@ -1,12 +1,12 @@
 """Benchmarking utilities for LLM throughput and latency."""
 
 import time
-from typing import Dict, Optional
+from typing import Dict
 
 import torch
 
 from flashllm.utils.logger import get_logger
-from flashllm.utils.model_utils import count_parameters, estimate_memory
+from flashllm.utils.model_utils import count_parameters
 
 logger = get_logger(__name__)
 

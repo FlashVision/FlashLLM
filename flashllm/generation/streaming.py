@@ -71,7 +71,6 @@ def stream_tokens(
     Yields:
         Individual decoded token strings.
     """
-    import torch.nn.functional as F
 
     inputs = tokenizer(prompt, return_tensors="pt").to(device)
     input_ids = inputs["input_ids"]

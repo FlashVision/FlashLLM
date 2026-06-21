@@ -5,7 +5,7 @@ models to handle sequences longer than their training context length.
 """
 
 import math
-from typing import Optional, Tuple
+from typing import Tuple
 
 import torch
 import torch.nn as nn

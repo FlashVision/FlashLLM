@@ -5,7 +5,6 @@ from typing import Dict, Optional
 import torch
 from tqdm import tqdm
 
-from flashllm.cfg.config import Config
 from flashllm.utils.logger import get_logger
 from flashllm.utils.metrics import compute_perplexity
 

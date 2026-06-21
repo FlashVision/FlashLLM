@@ -1,6 +1,5 @@
 """Token and positional embeddings for LLMs."""
 
-import math
 from typing import Optional, Tuple
 
 import torch

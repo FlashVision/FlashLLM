@@ -1,9 +1,8 @@
 """HuggingFace model adapter — unified loading for any AutoModelForCausalLM."""
 
-from typing import Optional
 
 import torch
-from transformers import AutoModelForCausalLM, AutoTokenizer, AutoConfig
+from transformers import AutoModelForCausalLM, AutoTokenizer
 
 from flashllm.utils.logger import get_logger
 

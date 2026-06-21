@@ -7,7 +7,7 @@ and function dispatch for tool-augmented generation.
 import json
 import re
 from dataclasses import dataclass, field
-from typing import Any, Callable, Dict, List, Optional, Union
+from typing import Any, Callable, Dict, List, Optional
 
 from flashllm.utils.logger import get_logger
 

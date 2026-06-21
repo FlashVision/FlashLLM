@@ -1,6 +1,5 @@
 """Code generation and completion assistant."""
 
-from typing import Optional
 
 
 class CodeAssistant:

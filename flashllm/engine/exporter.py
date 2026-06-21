@@ -1,8 +1,6 @@
 """Exporter for ONNX and GGUF model formats."""
 
-import os
 from pathlib import Path
-from typing import Optional
 
 import torch
 

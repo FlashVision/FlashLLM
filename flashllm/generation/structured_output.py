@@ -4,13 +4,11 @@ Constrains LLM generation to produce outputs matching a specific format,
 using logit masking at each decoding step.
 """
 
-import json
 import re
-from dataclasses import dataclass, field
-from typing import Any, Dict, List, Optional, Set, Tuple
+from dataclasses import dataclass
+from typing import Any, Dict, List, Optional, Set
 
 import torch
-import torch.nn.functional as F
 
 from flashllm.utils.logger import get_logger
 

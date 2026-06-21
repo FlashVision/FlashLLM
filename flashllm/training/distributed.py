@@ -5,8 +5,8 @@ with Fully Sharded Data Parallel (FSDP) and DeepSpeed ZeRO stages.
 """
 
 import os
-from dataclasses import dataclass, field
-from typing import Any, Dict, List, Optional, Type
+from dataclasses import dataclass
+from typing import Any, Dict, Optional, Type
 
 import torch
 import torch.nn as nn
