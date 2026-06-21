@@ -1,4 +1,4 @@
-"""Attention mechanisms for LLMs — MHA, GQA, MQA."""
+"""Attention mechanisms for LLMs — MHA, GQA, MQA with RoPE scaling support."""
 
 import math
 from typing import Optional, Tuple
@@ -17,12 +17,18 @@ class MultiHeadAttention(nn.Module):
     When num_kv_heads == 1, this becomes MQA.
     When num_kv_heads == num_heads, this is standard MHA.
 
+    Supports RoPE scaling methods (linear, dynamic NTK, YaRN) for
+    extending context windows beyond the original training length.
+
     Args:
         hidden_size: Model dimension.
         num_heads: Number of query heads.
         num_kv_heads: Number of key-value heads (for GQA/MQA).
         dropout: Attention dropout.
         max_position: Maximum sequence position for RoPE.
+        rope_scaling_type: RoPE scaling method ("linear", "dynamic_ntk", "yarn", None).
+        rope_scaling_factor: RoPE scaling factor for context extension.
+        rope_base: Base frequency for RoPE.
     """
 
     def __init__(
@@ -32,6 +38,9 @@ class MultiHeadAttention(nn.Module):
         num_kv_heads: Optional[int] = None,
         dropout: float = 0.0,
         max_position: int = 8192,
+        rope_scaling_type: Optional[str] = None,
+        rope_scaling_factor: float = 1.0,
+        rope_base: float = 10000.0,
     ):
         super().__init__()
         self.hidden_size = hidden_size
@@ -46,7 +55,20 @@ class MultiHeadAttention(nn.Module):
         self.o_proj = nn.Linear(num_heads * self.head_dim, hidden_size, bias=False)
 
         self.dropout = nn.Dropout(dropout)
-        self.rotary_emb = RotaryPositionalEmbedding(self.head_dim, max_position=max_position)
+
+        if rope_scaling_type is not None and rope_scaling_factor > 1.0:
+            from flashllm.models.rope_scaling import get_rope_scaling
+            self.rotary_emb = get_rope_scaling(
+                method=rope_scaling_type,
+                dim=self.head_dim,
+                max_position=max_position,
+                base=rope_base,
+                scaling_factor=rope_scaling_factor,
+            )
+        else:
+            self.rotary_emb = RotaryPositionalEmbedding(
+                self.head_dim, max_position=max_position, base=rope_base,
+            )
 
     def forward(
         self,
