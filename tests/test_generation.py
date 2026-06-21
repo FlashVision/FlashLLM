@@ -27,8 +27,8 @@ def test_sampler_temperature():
 
 
 def test_sampler_repetition_penalty():
-    sampler = Sampler(temperature=1.0, top_k=0, top_p=1.0, repetition_penalty=100.0)
-    logits = torch.tensor([[5.0, 0.1, 0.1, 0.1, 0.1]])
+    sampler = Sampler(temperature=0.01, top_k=0, top_p=1.0, repetition_penalty=100.0)
+    logits = torch.tensor([[1.0, 0.9, 0.9, 0.9, 0.9]])
     generated = torch.tensor([0])
     token = sampler(logits, generated_ids=generated)
     assert token.item() != 0

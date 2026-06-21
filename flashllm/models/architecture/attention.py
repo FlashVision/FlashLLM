@@ -58,6 +58,7 @@ class MultiHeadAttention(nn.Module):
 
         if rope_scaling_type is not None and rope_scaling_factor > 1.0:
             from flashllm.models.rope_scaling import get_rope_scaling
+
             self.rotary_emb = get_rope_scaling(
                 method=rope_scaling_type,
                 dim=self.head_dim,
@@ -67,7 +68,9 @@ class MultiHeadAttention(nn.Module):
             )
         else:
             self.rotary_emb = RotaryPositionalEmbedding(
-                self.head_dim, max_position=max_position, base=rope_base,
+                self.head_dim,
+                max_position=max_position,
+                base=rope_base,
             )
 
     def forward(
@@ -112,8 +115,9 @@ class MultiHeadAttention(nn.Module):
 
         return output, present_kv
 
-    def _apply_rotary(self, x: torch.Tensor, cos: torch.Tensor, sin: torch.Tensor,
-                      position_ids: Optional[torch.Tensor]) -> torch.Tensor:
+    def _apply_rotary(
+        self, x: torch.Tensor, cos: torch.Tensor, sin: torch.Tensor, position_ids: Optional[torch.Tensor]
+    ) -> torch.Tensor:
         """Apply rotary positional embeddings."""
         if position_ids is not None:
             cos = cos[position_ids].unsqueeze(1)
@@ -124,7 +128,7 @@ class MultiHeadAttention(nn.Module):
             sin = sin[:seq_len].unsqueeze(0).unsqueeze(0)
 
         x_rot = x[..., : x.shape[-1] // 2]
-        x_pass = x[..., x.shape[-1] // 2:]
+        x_pass = x[..., x.shape[-1] // 2 :]
         x_rotated = torch.cat((-x_pass, x_rot), dim=-1)
 
         return x * cos + x_rotated * sin

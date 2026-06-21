@@ -1,7 +1,6 @@
 """Code generation and completion assistant."""
 
 
-
 class CodeAssistant:
     """AI-powered code generation, completion, and explanation.
 
@@ -12,8 +11,9 @@ class CodeAssistant:
         temperature: Sampling temperature.
     """
 
-    def __init__(self, model_id: str = "Qwen/Qwen2.5-7B", device: str = "cuda",
-                 max_tokens: int = 1024, temperature: float = 0.2):
+    def __init__(
+        self, model_id: str = "Qwen/Qwen2.5-7B", device: str = "cuda", max_tokens: int = 1024, temperature: float = 0.2
+    ):
         self.model_id = model_id
         self.device = device
         self.max_tokens = max_tokens
@@ -24,6 +24,7 @@ class CodeAssistant:
     def predictor(self):
         if self._predictor is None:
             from flashllm.engine.predictor import Predictor
+
             self._predictor = Predictor(model_id=self.model_id, device=self.device)
         return self._predictor
 

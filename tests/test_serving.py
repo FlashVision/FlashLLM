@@ -5,15 +5,17 @@ import torch
 
 from flashllm.serving.vllm_engine import MemoryPool, BlockTable, PagedKVCache
 from flashllm.serving.continuous_batching import (
-    ContinuousBatcher, SequenceStatus,
+    ContinuousBatcher,
+    SequenceStatus,
 )
 from flashllm.serving.prefix_cache import PrefixCache
 
 
 class TestMemoryPool:
     def test_allocate_and_free(self):
-        pool = MemoryPool(num_blocks=16, block_size=4, num_layers=2,
-                          num_kv_heads=4, head_dim=8, dtype=torch.float32, device="cpu")
+        pool = MemoryPool(
+            num_blocks=16, block_size=4, num_layers=2, num_kv_heads=4, head_dim=8, dtype=torch.float32, device="cpu"
+        )
         assert pool.num_free_blocks == 16
 
         block_id = pool.allocate_block()
@@ -24,8 +26,9 @@ class TestMemoryPool:
         assert pool.num_free_blocks == 16
 
     def test_write_and_read(self):
-        pool = MemoryPool(num_blocks=4, block_size=8, num_layers=2,
-                          num_kv_heads=2, head_dim=4, dtype=torch.float32, device="cpu")
+        pool = MemoryPool(
+            num_blocks=4, block_size=8, num_layers=2, num_kv_heads=2, head_dim=4, dtype=torch.float32, device="cpu"
+        )
         block_id = pool.allocate_block()
 
         key = torch.randn(3, 2, 4)
@@ -37,16 +40,18 @@ class TestMemoryPool:
         assert torch.allclose(keys, key, atol=1e-6)
 
     def test_exhaustion_raises(self):
-        pool = MemoryPool(num_blocks=2, block_size=4, num_layers=1,
-                          num_kv_heads=1, head_dim=4, dtype=torch.float32, device="cpu")
+        pool = MemoryPool(
+            num_blocks=2, block_size=4, num_layers=1, num_kv_heads=1, head_dim=4, dtype=torch.float32, device="cpu"
+        )
         pool.allocate_block()
         pool.allocate_block()
         with pytest.raises(RuntimeError, match="exhausted"):
             pool.allocate_block()
 
     def test_memory_mb(self):
-        pool = MemoryPool(num_blocks=8, block_size=16, num_layers=4,
-                          num_kv_heads=8, head_dim=64, dtype=torch.float16, device="cpu")
+        pool = MemoryPool(
+            num_blocks=8, block_size=16, num_layers=4, num_kv_heads=8, head_dim=64, dtype=torch.float16, device="cpu"
+        )
         assert pool.memory_mb > 0
 
 
@@ -70,8 +75,9 @@ class TestBlockTable:
 
 class TestPagedKVCache:
     def test_register_and_free(self):
-        pool = MemoryPool(num_blocks=8, block_size=4, num_layers=1,
-                          num_kv_heads=2, head_dim=4, dtype=torch.float32, device="cpu")
+        pool = MemoryPool(
+            num_blocks=8, block_size=4, num_layers=1, num_kv_heads=2, head_dim=4, dtype=torch.float32, device="cpu"
+        )
         cache = PagedKVCache(pool)
 
         cache.register_sequence(0)
@@ -81,8 +87,9 @@ class TestPagedKVCache:
         assert 0 not in cache.block_tables
 
     def test_append_and_get(self):
-        pool = MemoryPool(num_blocks=8, block_size=4, num_layers=1,
-                          num_kv_heads=2, head_dim=4, dtype=torch.float32, device="cpu")
+        pool = MemoryPool(
+            num_blocks=8, block_size=4, num_layers=1, num_kv_heads=2, head_dim=4, dtype=torch.float32, device="cpu"
+        )
         cache = PagedKVCache(pool)
         cache.register_sequence(0)
 
@@ -94,8 +101,9 @@ class TestPagedKVCache:
         assert k.shape[0] == 3
 
     def test_fork_sequence(self):
-        pool = MemoryPool(num_blocks=8, block_size=4, num_layers=1,
-                          num_kv_heads=2, head_dim=4, dtype=torch.float32, device="cpu")
+        pool = MemoryPool(
+            num_blocks=8, block_size=4, num_layers=1, num_kv_heads=2, head_dim=4, dtype=torch.float32, device="cpu"
+        )
         cache = PagedKVCache(pool)
         cache.register_sequence(0)
 

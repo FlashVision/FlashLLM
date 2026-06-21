@@ -22,6 +22,7 @@ class BlockTable:
     Each sequence maintains its own block table that tracks which physical
     blocks hold its KV cache data.
     """
+
     block_size: int
     physical_blocks: List[int] = field(default_factory=list)
 
@@ -38,10 +39,7 @@ class BlockTable:
 
     def get_physical_block(self, logical_idx: int) -> int:
         if logical_idx >= len(self.physical_blocks):
-            raise IndexError(
-                f"Logical block {logical_idx} out of range "
-                f"(have {len(self.physical_blocks)} blocks)"
-            )
+            raise IndexError(f"Logical block {logical_idx} out of range (have {len(self.physical_blocks)} blocks)")
         return self.physical_blocks[logical_idx]
 
     def release_last_block(self) -> int:
@@ -83,12 +81,22 @@ class MemoryPool:
         self.device = device
 
         self.key_pool = torch.zeros(
-            num_layers, num_blocks, block_size, num_kv_heads, head_dim,
-            dtype=dtype, device=device,
+            num_layers,
+            num_blocks,
+            block_size,
+            num_kv_heads,
+            head_dim,
+            dtype=dtype,
+            device=device,
         )
         self.value_pool = torch.zeros(
-            num_layers, num_blocks, block_size, num_kv_heads, head_dim,
-            dtype=dtype, device=device,
+            num_layers,
+            num_blocks,
+            block_size,
+            num_kv_heads,
+            head_dim,
+            dtype=dtype,
+            device=device,
         )
 
         self._free_blocks: List[int] = list(range(num_blocks))
@@ -143,8 +151,8 @@ class MemoryPool:
             value: Value tensor of shape (num_tokens, num_kv_heads, head_dim).
         """
         num_tokens = key.shape[0]
-        self.key_pool[layer_idx, block_id, slot_offset:slot_offset + num_tokens] = key
-        self.value_pool[layer_idx, block_id, slot_offset:slot_offset + num_tokens] = value
+        self.key_pool[layer_idx, block_id, slot_offset : slot_offset + num_tokens] = key
+        self.value_pool[layer_idx, block_id, slot_offset : slot_offset + num_tokens] = value
 
     def read_kv(
         self,
@@ -216,9 +224,7 @@ class PagedKVCache:
         written = 0
 
         while written < num_tokens:
-            current_len = self.seq_lengths[seq_id] + written if layer_idx == 0 else (
-                self.seq_lengths[seq_id] + written
-            )
+            current_len = self.seq_lengths[seq_id] + written if layer_idx == 0 else (self.seq_lengths[seq_id] + written)
             block_idx = current_len // self.pool.block_size
             slot_offset = current_len % self.pool.block_size
 
@@ -230,9 +236,11 @@ class PagedKVCache:
             chunk = min(num_tokens - written, self.pool.block_size - slot_offset)
 
             self.pool.write_kv(
-                layer_idx, physical_block, slot_offset,
-                keys[written:written + chunk],
-                values[written:written + chunk],
+                layer_idx,
+                physical_block,
+                slot_offset,
+                keys[written : written + chunk],
+                values[written : written + chunk],
             )
             written += chunk
 
@@ -300,13 +308,18 @@ class VLLMEngine:
 
         config = model.config
         num_layers = getattr(config, "num_hidden_layers", 32)
-        num_kv_heads = getattr(config, "num_key_value_heads",
-                               getattr(config, "num_attention_heads", 32))
+        num_kv_heads = getattr(config, "num_key_value_heads", getattr(config, "num_attention_heads", 32))
         head_dim = getattr(config, "hidden_size", 4096) // getattr(config, "num_attention_heads", 32)
 
         device = next(model.parameters()).device
         num_blocks = self._estimate_num_blocks(
-            gpu_memory_fraction, num_layers, num_kv_heads, head_dim, block_size, dtype, device,
+            gpu_memory_fraction,
+            num_layers,
+            num_kv_heads,
+            head_dim,
+            block_size,
+            dtype,
+            device,
         )
 
         self.memory_pool = MemoryPool(
@@ -323,11 +336,19 @@ class VLLMEngine:
 
         logger.info(
             "VLLMEngine initialized: %d blocks, %.1f MB KV cache",
-            num_blocks, self.memory_pool.memory_mb,
+            num_blocks,
+            self.memory_pool.memory_mb,
         )
 
     def _estimate_num_blocks(
-        self, fraction, num_layers, num_kv_heads, head_dim, block_size, dtype, device,
+        self,
+        fraction,
+        num_layers,
+        num_kv_heads,
+        head_dim,
+        block_size,
+        dtype,
+        device,
     ) -> int:
         if device.type != "cuda":
             return 512

@@ -40,6 +40,7 @@ class Registry:
             @MODELS.register()
             class MyModel: ...
         """
+
         def decorator(obj):
             key = name or obj.__name__
             if key in self._registry:
@@ -59,18 +60,14 @@ class Registry:
         """Build a registered component by name."""
         if name not in self._registry:
             available = ", ".join(sorted(self._registry.keys()))
-            raise KeyError(
-                f"{self._name}: '{name}' not found. Available: [{available}]"
-            )
+            raise KeyError(f"{self._name}: '{name}' not found. Available: [{available}]")
         return self._registry[name](**kwargs)
 
     def get(self, name: str) -> Any:
         """Get the registered class without instantiating."""
         if name not in self._registry:
             available = ", ".join(sorted(self._registry.keys()))
-            raise KeyError(
-                f"{self._name}: '{name}' not found. Available: [{available}]"
-            )
+            raise KeyError(f"{self._name}: '{name}' not found. Available: [{available}]")
         return self._registry[name]
 
     def list(self) -> list:

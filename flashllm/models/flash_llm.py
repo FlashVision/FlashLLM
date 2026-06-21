@@ -65,6 +65,7 @@ class FlashLLM:
         if load_in_4bit or load_in_8bit:
             try:
                 from transformers import BitsAndBytesConfig
+
                 quant_config = BitsAndBytesConfig(
                     load_in_4bit=load_in_4bit,
                     load_in_8bit=load_in_8bit,
@@ -130,7 +131,7 @@ class FlashLLM:
             **kwargs,
         )
 
-        new_tokens = outputs[0, inputs["input_ids"].shape[1]:]
+        new_tokens = outputs[0, inputs["input_ids"].shape[1] :]
         return self.tokenizer.decode(new_tokens, skip_special_tokens=True)
 
     @torch.inference_mode()

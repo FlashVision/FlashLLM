@@ -34,6 +34,7 @@ def test_duplicate_raises():
         pass
 
     with pytest.raises(KeyError):
+
         @reg.register("Dup")
         class Dup2:
             pass

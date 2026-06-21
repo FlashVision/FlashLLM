@@ -45,8 +45,10 @@ def quantize_bitsandbytes(
 
     if bits == 4:
         bnb_config = BitsAndBytesConfig(
-            load_in_4bit=True, bnb_4bit_compute_dtype=compute_dt,
-            bnb_4bit_quant_type=quant_type, bnb_4bit_use_double_quant=double_quant,
+            load_in_4bit=True,
+            bnb_4bit_compute_dtype=compute_dt,
+            bnb_4bit_quant_type=quant_type,
+            bnb_4bit_use_double_quant=double_quant,
         )
     elif bits == 8:
         bnb_config = BitsAndBytesConfig(load_in_8bit=True)

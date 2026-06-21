@@ -20,6 +20,7 @@ logger = get_logger(__name__)
 @dataclass
 class PrefixCacheEntry:
     """A cached KV state for a token prefix."""
+
     prefix_hash: str
     token_ids: List[int]
     kv_states: List[Tuple[torch.Tensor, torch.Tensor]]  # per-layer (key, value)
@@ -136,8 +137,7 @@ class PrefixCache:
             kv_states=kv_cloned,
         )
 
-        while (self._current_memory + entry.memory_bytes > self.max_memory_bytes
-               or len(self._cache) >= self.max_entries):
+        while self._current_memory + entry.memory_bytes > self.max_memory_bytes or len(self._cache) >= self.max_entries:
             if not self._cache:
                 break
             self._evict_lru()
@@ -240,10 +240,7 @@ class PrefixAwareEngine:
 
         if cached is not None:
             prefix_len = cached.num_tokens
-            past_key_values = tuple(
-                (k.to(input_ids.device), v.to(input_ids.device))
-                for k, v in cached.kv_states
-            )
+            past_key_values = tuple((k.to(input_ids.device), v.to(input_ids.device)) for k, v in cached.kv_states)
             remaining_ids = input_ids[:, prefix_len:]
 
             outputs = self.model(
@@ -254,11 +251,11 @@ class PrefixAwareEngine:
         else:
             outputs = self.model(input_ids=input_ids, use_cache=True)
             if hasattr(outputs, "past_key_values") and outputs.past_key_values is not None:
-                kv_states = [
-                    (k.cpu(), v.cpu()) for k, v in outputs.past_key_values
-                ]
+                kv_states = [(k.cpu(), v.cpu()) for k, v in outputs.past_key_values]
                 self.prefix_cache.insert(token_list, kv_states)
 
         return self.model.generate(
-            input_ids, max_new_tokens=max_new_tokens, **kwargs,
+            input_ids,
+            max_new_tokens=max_new_tokens,
+            **kwargs,
         )

@@ -19,13 +19,13 @@ def main():
     parser.add_argument("--temperature", type=float, default=0.7, help="Sampling temperature")
     args = parser.parse_args()
 
-    print(f"\n{'='*50}")
+    print(f"\n{'=' * 50}")
     print(f"  FlashLLM Chat — {args.model}")
-    print(f"{'='*50}")
+    print(f"{'=' * 50}")
     print(f"  Device: {args.device}")
     print(f"  System: {args.system_prompt}")
     print(f"  Type 'quit' to exit, 'reset' to clear history")
-    print(f"{'='*50}\n")
+    print(f"{'=' * 50}\n")
 
     chatbot = Chatbot(
         model_id=args.model,

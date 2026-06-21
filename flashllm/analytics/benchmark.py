@@ -36,6 +36,7 @@ class Benchmark:
     def _load_model(self):
         if self._model is None:
             from flashllm.models.flash_llm import FlashLLM
+
             self._model = FlashLLM(self.model_id, torch_dtype=self.torch_dtype, device_map=self.device)
 
     def run(
@@ -105,10 +106,6 @@ class Benchmark:
             "model_id": self.model_id,
         }
 
-        logger.info(
-            f"Benchmark: {tokens_per_sec:.1f} tok/s, "
-            f"{avg_latency*1000:.1f} ms/gen, "
-            f"{memory_mb:.0f} MB peak"
-        )
+        logger.info(f"Benchmark: {tokens_per_sec:.1f} tok/s, {avg_latency * 1000:.1f} ms/gen, {memory_mb:.0f} MB peak")
 
         return results

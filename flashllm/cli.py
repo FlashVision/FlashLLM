@@ -18,6 +18,7 @@ def _print_banner():
 
 def _get_version():
     from flashllm import __version__
+
     return __version__
 
 
@@ -43,6 +44,7 @@ def cmd_settings(args):
     print(f"  NumPy:          {np.__version__}")
     try:
         import transformers
+
         print(f"  Transformers:   {transformers.__version__}")
     except ImportError:
         print("  Transformers:   Not installed")
@@ -69,6 +71,7 @@ def cmd_check(args):
 
     try:
         import flashllm  # noqa: F401
+
         print(f"  {_colored('✓', 'green')} flashllm package")
     except ImportError as e:
         print(f"  {_colored('✗', 'red')} flashllm package: {e}")
@@ -76,6 +79,7 @@ def cmd_check(args):
 
     try:
         from flashllm.engine import Trainer, Predictor, Exporter, Validator  # noqa: F401
+
         print(f"  {_colored('✓', 'green')} engine (Trainer, Predictor, Exporter, Validator)")
     except ImportError as e:
         print(f"  {_colored('✗', 'red')} engine: {e}")
@@ -83,6 +87,7 @@ def cmd_check(args):
 
     try:
         from flashllm.generation import Sampler, BeamSearch, KVCache  # noqa: F401
+
         print(f"  {_colored('✓', 'green')} generation (Sampler, BeamSearch, KVCache)")
     except ImportError as e:
         print(f"  {_colored('✗', 'red')} generation: {e}")
@@ -90,6 +95,7 @@ def cmd_check(args):
 
     try:
         from flashllm.solutions import Chatbot, Summarizer, CodeAssistant  # noqa: F401
+
         print(f"  {_colored('✓', 'green')} solutions (Chatbot, Summarizer, CodeAssistant)")
     except ImportError as e:
         print(f"  {_colored('✗', 'red')} solutions: {e}")
@@ -97,6 +103,7 @@ def cmd_check(args):
 
     try:
         from flashllm.analytics import Benchmark, Profiler  # noqa: F401
+
         print(f"  {_colored('✓', 'green')} analytics (Benchmark, Profiler)")
     except ImportError as e:
         print(f"  {_colored('✗', 'red')} analytics: {e}")
@@ -104,12 +111,14 @@ def cmd_check(args):
 
     try:
         import transformers  # noqa: F401
+
         print(f"  {_colored('✓', 'green')} transformers ({transformers.__version__})")
     except ImportError as e:
         print(f"  {_colored('✗', 'red')} transformers: {e}")
         errors.append(str(e))
 
     import torch
+
     if torch.cuda.is_available():
         print(f"  {_colored('✓', 'green')} CUDA ({torch.cuda.get_device_name(0)})")
     else:
@@ -129,6 +138,7 @@ def cmd_train(args):
 
     if args.config:
         from flashllm.cfg import load_yaml_config
+
         cfg = load_yaml_config(args.config)
         print(f"{_colored('Config:', 'bold')} {args.config}")
         trainer = Trainer(config=cfg, device=args.device)
@@ -270,8 +280,9 @@ Documentation: https://github.com/FlashVision/FlashLLM
     train_p.add_argument("--config", default=None, help="Path to YAML config")
     train_p.add_argument("--model", default=None, help="HuggingFace model ID")
     train_p.add_argument("--dataset", default=None, help="Path to training dataset")
-    train_p.add_argument("--method", default="sft", choices=["sft", "lora", "qlora", "dpo"],
-                         help="Training method (default: sft)")
+    train_p.add_argument(
+        "--method", default="sft", choices=["sft", "lora", "qlora", "dpo"], help="Training method (default: sft)"
+    )
     train_p.add_argument("--epochs", type=int, default=3, help="Training epochs (default: 3)")
     train_p.add_argument("--batch-size", type=int, default=4, help="Batch size (default: 4)")
     train_p.add_argument("--lr", type=float, default=None, help="Learning rate")
@@ -283,8 +294,9 @@ Documentation: https://github.com/FlashVision/FlashLLM
     chat_p = subparsers.add_parser("chat", help="Interactive chat with a model")
     chat_p.add_argument("--model", required=True, help="HuggingFace model ID")
     chat_p.add_argument("--device", default="cuda", help="Device (default: cuda)")
-    chat_p.add_argument("--system-prompt", default="You are a helpful assistant.",
-                        help="System prompt for the conversation")
+    chat_p.add_argument(
+        "--system-prompt", default="You are a helpful assistant.", help="System prompt for the conversation"
+    )
 
     # generate
     gen_p = subparsers.add_parser("generate", help="Generate text from a prompt")
@@ -312,8 +324,9 @@ Documentation: https://github.com/FlashVision/FlashLLM
     # quantize
     quant_p = subparsers.add_parser("quantize", help="Quantize a model")
     quant_p.add_argument("--model", required=True, help="HuggingFace model ID")
-    quant_p.add_argument("--method", default="gptq", choices=["gptq", "awq", "bitsandbytes"],
-                         help="Quantization method (default: gptq)")
+    quant_p.add_argument(
+        "--method", default="gptq", choices=["gptq", "awq", "bitsandbytes"], help="Quantization method (default: gptq)"
+    )
     quant_p.add_argument("--bits", type=int, default=4, choices=[4, 8], help="Quantization bits (default: 4)")
     quant_p.add_argument("--output", default=None, help="Output directory")
 

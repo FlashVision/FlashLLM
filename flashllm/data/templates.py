@@ -41,11 +41,7 @@ class AlpacaTemplate(BaseTemplate):
         output = sample.get("output", sample.get("completion", ""))
 
         if input_text:
-            prompt = (
-                f"### Instruction:\n{instruction}\n\n"
-                f"### Input:\n{input_text}\n\n"
-                f"### Response:\n{output}"
-            )
+            prompt = f"### Instruction:\n{instruction}\n\n### Input:\n{input_text}\n\n### Response:\n{output}"
         else:
             prompt = f"### Instruction:\n{instruction}\n\n### Response:\n{output}"
 
@@ -86,11 +82,7 @@ class ChatMLTemplate(BaseTemplate):
         prompt = instruction
         if input_text:
             prompt = f"{instruction}\n\n{input_text}"
-        return (
-            f"<|im_start|>system\n{system}<|im_end|>\n"
-            f"<|im_start|>user\n{prompt}<|im_end|>\n"
-            f"<|im_start|>assistant\n"
-        )
+        return f"<|im_start|>system\n{system}<|im_end|>\n<|im_start|>user\n{prompt}<|im_end|>\n<|im_start|>assistant\n"
 
 
 @TEMPLATES.register("llama")
@@ -175,10 +167,7 @@ class GemmaTemplate(BaseTemplate):
         instruction = sample.get("instruction", sample.get("prompt", ""))
         output = sample.get("output", sample.get("completion", ""))
 
-        return (
-            f"<start_of_turn>user\n{instruction}<end_of_turn>\n"
-            f"<start_of_turn>model\n{output}<end_of_turn>"
-        )
+        return f"<start_of_turn>user\n{instruction}<end_of_turn>\n<start_of_turn>model\n{output}<end_of_turn>"
 
     def format_prompt(self, instruction: str, input_text: str = "") -> str:
         prompt = instruction

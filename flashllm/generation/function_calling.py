@@ -17,6 +17,7 @@ logger = get_logger(__name__)
 @dataclass
 class FunctionParameter:
     """Schema for a single function parameter."""
+
     name: str
     type: str  # "string", "integer", "number", "boolean", "array", "object"
     description: str = ""
@@ -35,6 +36,7 @@ class FunctionSchema:
         parameters: List of parameter schemas.
         returns: Description of return value.
     """
+
     name: str
     description: str
     parameters: List[FunctionParameter] = field(default_factory=list)
@@ -120,7 +122,7 @@ class FunctionCallExtractor:
                 elif text[i] == "}":
                     brace_depth -= 1
                     if brace_depth == 0:
-                        candidate = text[brace_start:i + 1]
+                        candidate = text[brace_start : i + 1]
                         call = json.loads(candidate)
                         if "name" in call:
                             return call

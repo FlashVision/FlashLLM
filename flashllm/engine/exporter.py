@@ -89,6 +89,7 @@ class Exporter:
         if simplify:
             try:
                 import onnxsim
+
                 model_onnx = onnx.load(str(output_path))
                 model_simplified, check = onnxsim.simplify(model_onnx)
                 if check:

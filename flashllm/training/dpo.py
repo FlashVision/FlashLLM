@@ -48,8 +48,12 @@ class DPOTrainer:
 
         if self.ref_model is not None:
             with torch.no_grad():
-                ref_chosen_logps = self._get_log_probs(self.ref_model, batch["chosen_input_ids"], batch["chosen_attention_mask"])
-                ref_rejected_logps = self._get_log_probs(self.ref_model, batch["rejected_input_ids"], batch["rejected_attention_mask"])
+                ref_chosen_logps = self._get_log_probs(
+                    self.ref_model, batch["chosen_input_ids"], batch["chosen_attention_mask"]
+                )
+                ref_rejected_logps = self._get_log_probs(
+                    self.ref_model, batch["rejected_input_ids"], batch["rejected_attention_mask"]
+                )
         else:
             ref_chosen_logps = torch.zeros_like(chosen_logps)
             ref_rejected_logps = torch.zeros_like(rejected_logps)

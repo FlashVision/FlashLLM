@@ -49,12 +49,20 @@ class KVCache:
         """Pre-allocate cache tensors."""
         for _ in range(self.num_layers):
             k = torch.zeros(
-                self.max_batch_size, self.num_kv_heads, self.max_seq_length, self.head_dim,
-                dtype=self.dtype, device=self.device,
+                self.max_batch_size,
+                self.num_kv_heads,
+                self.max_seq_length,
+                self.head_dim,
+                dtype=self.dtype,
+                device=self.device,
             )
             v = torch.zeros(
-                self.max_batch_size, self.num_kv_heads, self.max_seq_length, self.head_dim,
-                dtype=self.dtype, device=self.device,
+                self.max_batch_size,
+                self.num_kv_heads,
+                self.max_seq_length,
+                self.head_dim,
+                dtype=self.dtype,
+                device=self.device,
             )
             self.key_cache.append(k)
             self.value_cache.append(v)
@@ -70,12 +78,12 @@ class KVCache:
         seq_len = self.seq_lengths[batch_idx].item()
         new_len = key.shape[2]
 
-        self.key_cache[layer_idx][batch_idx, :, seq_len:seq_len + new_len, :] = key[0]
-        self.value_cache[layer_idx][batch_idx, :, seq_len:seq_len + new_len, :] = value[0]
+        self.key_cache[layer_idx][batch_idx, :, seq_len : seq_len + new_len, :] = key[0]
+        self.value_cache[layer_idx][batch_idx, :, seq_len : seq_len + new_len, :] = value[0]
 
         total_len = seq_len + new_len
-        cached_keys = self.key_cache[layer_idx][batch_idx:batch_idx + 1, :, :total_len, :]
-        cached_values = self.value_cache[layer_idx][batch_idx:batch_idx + 1, :, :total_len, :]
+        cached_keys = self.key_cache[layer_idx][batch_idx : batch_idx + 1, :, :total_len, :]
+        cached_values = self.value_cache[layer_idx][batch_idx : batch_idx + 1, :, :total_len, :]
 
         return cached_keys, cached_values
 
@@ -105,7 +113,6 @@ class KVCache:
         """Estimate cache memory usage in MB."""
         element_size = self.key_cache[0].element_size() if self.key_cache else 2
         total_elements = (
-            2 * self.num_layers * self.max_batch_size * self.num_kv_heads
-            * self.max_seq_length * self.head_dim
+            2 * self.num_layers * self.max_batch_size * self.num_kv_heads * self.max_seq_length * self.head_dim
         )
         return total_elements * element_size / (1024 * 1024)

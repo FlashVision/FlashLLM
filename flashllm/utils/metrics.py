@@ -82,7 +82,7 @@ def compute_rouge_l(prediction: str, reference: str) -> Dict[str, float]:
 
 def _get_ngrams(tokens: List[str], n: int) -> List[tuple]:
     """Extract n-grams from a token list."""
-    return [tuple(tokens[i:i+n]) for i in range(len(tokens) - n + 1)]
+    return [tuple(tokens[i : i + n]) for i in range(len(tokens) - n + 1)]
 
 
 def _lcs_length(x: List[str], y: List[str]) -> int:
@@ -92,9 +92,9 @@ def _lcs_length(x: List[str], y: List[str]) -> int:
 
     for i in range(1, m + 1):
         for j in range(1, n + 1):
-            if x[i-1] == y[j-1]:
-                dp[i][j] = dp[i-1][j-1] + 1
+            if x[i - 1] == y[j - 1]:
+                dp[i][j] = dp[i - 1][j - 1] + 1
             else:
-                dp[i][j] = max(dp[i-1][j], dp[i][j-1])
+                dp[i][j] = max(dp[i - 1][j], dp[i][j - 1])
 
     return dp[m][n]

@@ -27,6 +27,7 @@ class Profiler:
     def _load_model(self):
         if self._model is None:
             from flashllm.models.flash_llm import FlashLLM
+
             self._model = FlashLLM(self.model_id, device_map=self.device)
 
     def run(self, input_length: int = 128) -> Dict:
@@ -43,9 +44,9 @@ class Profiler:
         tokenizer = self._model.tokenizer
 
         params = count_parameters(model)
-        print(f"\n{'='*60}")
+        print(f"\n{'=' * 60}")
         print(f"  Model Profile: {self.model_id}")
-        print(f"{'='*60}")
+        print(f"{'=' * 60}")
         print(f"  Total parameters:      {params['total']:>15,}")
         print(f"  Trainable parameters:  {params['trainable']:>15,}")
         print(f"  Model size (FP16):     {params['total_gb']:.2f} GB")
@@ -53,12 +54,12 @@ class Profiler:
 
         layer_info = self._profile_layers(model)
         print(f"  {'Layer':<40} {'Params':>12} {'Size (MB)':>10}")
-        print(f"  {'-'*40} {'-'*12} {'-'*10}")
+        print(f"  {'-' * 40} {'-' * 12} {'-' * 10}")
         for name, info in layer_info[:20]:
             print(f"  {name:<40} {info['params']:>12,} {info['size_mb']:>10.2f}")
 
         if len(layer_info) > 20:
-            print(f"  ... and {len(layer_info)-20} more layers")
+            print(f"  ... and {len(layer_info) - 20} more layers")
 
         if self.device == "cuda":
             print()
@@ -66,7 +67,7 @@ class Profiler:
             print(f"  Peak memory (inference): {mem_info['peak_mb']:.0f} MB")
             print(f"  Model memory:            {mem_info['model_mb']:.0f} MB")
 
-        print(f"\n{'='*60}\n")
+        print(f"\n{'=' * 60}\n")
 
         return {"params": params, "layers": layer_info}
 

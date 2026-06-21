@@ -80,10 +80,10 @@ class GaLoreProjector:
         with torch.no_grad():
             if grad.shape[0] >= grad.shape[1]:
                 U, _, _ = torch.svd_lowrank(grad.float(), q=self.rank)
-                self._projector = U[:, :self.rank].to(grad.dtype)
+                self._projector = U[:, : self.rank].to(grad.dtype)
             else:
                 _, _, V = torch.svd_lowrank(grad.float(), q=self.rank)
-                self._projector = V[:, :self.rank].to(grad.dtype)
+                self._projector = V[:, : self.rank].to(grad.dtype)
 
 
 class GaLoreAdamW(Optimizer):
@@ -116,8 +116,13 @@ class GaLoreAdamW(Optimizer):
         scale: float = 1.0,
     ):
         defaults = dict(
-            lr=lr, betas=betas, eps=eps, weight_decay=weight_decay,
-            rank=rank, update_proj_gap=update_proj_gap, scale=scale,
+            lr=lr,
+            betas=betas,
+            eps=eps,
+            weight_decay=weight_decay,
+            rank=rank,
+            update_proj_gap=update_proj_gap,
+            scale=scale,
         )
         super().__init__(params, defaults)
         self._projectors: Dict[int, GaLoreProjector] = {}
@@ -148,7 +153,9 @@ class GaLoreAdamW(Optimizer):
                     param_id = id(p)
                     if param_id not in self._projectors:
                         self._projectors[param_id] = GaLoreProjector(
-                            rank=rank, update_interval=update_proj_gap, scale=scale,
+                            rank=rank,
+                            update_interval=update_proj_gap,
+                            scale=scale,
                         )
                     projector = self._projectors[param_id]
                     original_shape = grad.shape
@@ -171,7 +178,7 @@ class GaLoreAdamW(Optimizer):
                 bias_correction2 = 1 - beta2 ** state["step"]
 
                 step_size = group["lr"] / bias_correction1
-                denom = (exp_avg_sq.sqrt() / (bias_correction2 ** 0.5)).add_(group["eps"])
+                denom = (exp_avg_sq.sqrt() / (bias_correction2**0.5)).add_(group["eps"])
 
                 update = exp_avg / denom
 
@@ -225,17 +232,22 @@ def setup_galore_optimizer(
 
     param_groups = [
         {"params": regular_params, "use_galore": False},
-        {"params": galore_params, "use_galore": True, "rank": rank,
-         "update_proj_gap": update_proj_gap, "scale": scale},
+        {"params": galore_params, "use_galore": True, "rank": rank, "update_proj_gap": update_proj_gap, "scale": scale},
     ]
 
     optimizer = GaLoreAdamW(
-        param_groups, lr=lr, weight_decay=weight_decay,
-        rank=rank, update_proj_gap=update_proj_gap, scale=scale,
+        param_groups,
+        lr=lr,
+        weight_decay=weight_decay,
+        rank=rank,
+        update_proj_gap=update_proj_gap,
+        scale=scale,
     )
 
     logger.info(
         "GaLore optimizer: %d GaLore params, %d regular params, rank=%d",
-        len(galore_params), len(regular_params), rank,
+        len(galore_params),
+        len(regular_params),
+        rank,
     )
     return optimizer

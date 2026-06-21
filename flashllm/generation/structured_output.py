@@ -23,6 +23,7 @@ class JSONSchema:
         schema: JSON Schema dict (subset of JSON Schema spec).
         strict: If True, require exact match; if False, allow extra fields.
     """
+
     schema: Dict[str, Any]
     strict: bool = True
 
@@ -103,7 +104,7 @@ class JSONModeConstraint:
             if stripped in ("true", "false", "null"):
                 self._true_false_null_tokens.add(token_id)
 
-            if all(c.isprintable() or c in ' \t\n' for c in token_str):
+            if all(c.isprintable() or c in " \t\n" for c in token_str):
                 self._string_content_tokens.add(token_id)
 
     def __call__(
@@ -190,18 +191,28 @@ class JSONModeConstraint:
         elif state == "OBJECT_START":
             return self._quote_tokens | self._close_brace_tokens | self._whitespace_tokens
         elif state == "COLON":
-            return (self._quote_tokens | self._number_tokens |
-                    self._open_brace_tokens | self._open_bracket_tokens |
-                    self._true_false_null_tokens | self._whitespace_tokens)
+            return (
+                self._quote_tokens
+                | self._number_tokens
+                | self._open_brace_tokens
+                | self._open_bracket_tokens
+                | self._true_false_null_tokens
+                | self._whitespace_tokens
+            )
         elif state == "COMMA":
             return self._quote_tokens | self._whitespace_tokens
         elif state == "OBJECT_END":
             return self._comma_tokens | self._close_brace_tokens | self._close_bracket_tokens | self._whitespace_tokens
         elif state == "ARRAY_START":
-            return (self._quote_tokens | self._number_tokens |
-                    self._open_brace_tokens | self._open_bracket_tokens |
-                    self._true_false_null_tokens | self._close_bracket_tokens |
-                    self._whitespace_tokens)
+            return (
+                self._quote_tokens
+                | self._number_tokens
+                | self._open_brace_tokens
+                | self._open_bracket_tokens
+                | self._true_false_null_tokens
+                | self._close_bracket_tokens
+                | self._whitespace_tokens
+            )
         elif state == "ARRAY_END":
             return self._comma_tokens | self._close_bracket_tokens | self._close_brace_tokens | self._whitespace_tokens
         elif state == "IN_STRING":
@@ -280,6 +291,7 @@ class RegexConstraint:
 @dataclass
 class GrammarRule:
     """A single production rule in a context-free grammar."""
+
     name: str
     alternatives: List[List[str]]  # each alternative is a list of symbol names or literals
 

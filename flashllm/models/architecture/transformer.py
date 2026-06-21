@@ -69,8 +69,11 @@ class TransformerBlock(nn.Module):
         residual = x
         x = self.attention_norm(x)
         attn_output, present_kv = self.attention(
-            x, attention_mask=attention_mask, position_ids=position_ids,
-            past_key_value=past_key_value, use_cache=use_cache,
+            x,
+            attention_mask=attention_mask,
+            position_ids=position_ids,
+            past_key_value=past_key_value,
+            use_cache=use_cache,
         )
         x = residual + self.dropout(attn_output)
 

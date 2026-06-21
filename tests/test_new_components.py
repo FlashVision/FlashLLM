@@ -5,10 +5,16 @@ import torch
 
 from flashllm.models.moe import TopKRouter, Expert, MoELayer, MoETransformerBlock
 from flashllm.models.rope_scaling import (
-    LinearScaledRoPE, DynamicNTKScaledRoPE, YaRNScaledRoPE, get_rope_scaling,
+    LinearScaledRoPE,
+    DynamicNTKScaledRoPE,
+    YaRNScaledRoPE,
+    get_rope_scaling,
 )
 from flashllm.generation.function_calling import (
-    FunctionSchema, FunctionParameter, FunctionCallExtractor, FunctionDispatcher,
+    FunctionSchema,
+    FunctionParameter,
+    FunctionCallExtractor,
+    FunctionDispatcher,
 )
 from flashllm.eval.harness import MMLUTask, HumanEvalTask, MTBenchTask, EvalResult
 from flashllm.training.galore import GaLoreProjector, GaLoreAdamW
@@ -42,8 +48,11 @@ class TestMoE:
 
     def test_moe_transformer_block(self):
         block = MoETransformerBlock(
-            hidden_size=64, num_heads=4, intermediate_size=128,
-            num_experts=4, top_k=2,
+            hidden_size=64,
+            num_heads=4,
+            intermediate_size=128,
+            num_experts=4,
+            top_k=2,
         )
         x = torch.randn(1, 8, 64)
         out, present_kv, lb_loss = block(x)
@@ -104,8 +113,11 @@ class TestFunctionCalling:
     def test_dispatcher(self):
         dispatcher = FunctionDispatcher()
 
-        @dispatcher.register(name="add", description="Add numbers",
-                             parameters=[FunctionParameter("a", "integer"), FunctionParameter("b", "integer")])
+        @dispatcher.register(
+            name="add",
+            description="Add numbers",
+            parameters=[FunctionParameter("a", "integer"), FunctionParameter("b", "integer")],
+        )
         def add(a, b):
             return a + b
 
@@ -136,7 +148,8 @@ class TestGaLore:
         model = torch.nn.Linear(32, 64)
         optimizer = GaLoreAdamW(
             [{"params": model.parameters(), "use_galore": True}],
-            lr=0.01, rank=4,
+            lr=0.01,
+            rank=4,
         )
         x = torch.randn(4, 32)
         loss = model(x).sum()
@@ -247,5 +260,6 @@ class TestGGUFWriter:
         writer.write()
 
         import os
+
         assert os.path.exists(output)
         assert os.path.getsize(output) > 0

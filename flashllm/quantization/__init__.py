@@ -5,9 +5,14 @@ from flashllm.quantization.exl2 import quantize_exl2, EXL2QuantConfig
 from flashllm.quantization.hqq import quantize_hqq, HQQQuantizer, HQQLinear
 
 __all__ = [
-    "quantize_gptq", "quantize_awq", "quantize_bitsandbytes",
-    "quantize_exl2", "EXL2QuantConfig",
-    "quantize_hqq", "HQQQuantizer", "HQQLinear",
+    "quantize_gptq",
+    "quantize_awq",
+    "quantize_bitsandbytes",
+    "quantize_exl2",
+    "EXL2QuantConfig",
+    "quantize_hqq",
+    "HQQQuantizer",
+    "HQQLinear",
 ]
 
 
@@ -39,6 +44,5 @@ def quantize_model(model_id: str, method: str = "gptq", bits: int = 4, output_di
         return quantize_hqq(model_id, output_dir=output_dir, bits=bits)
     else:
         raise ValueError(
-            f"Unsupported quantization method: {method}. "
-            "Use 'gptq', 'awq', 'bitsandbytes', 'exl2', or 'hqq'."
+            f"Unsupported quantization method: {method}. Use 'gptq', 'awq', 'bitsandbytes', 'exl2', or 'hqq'."
         )

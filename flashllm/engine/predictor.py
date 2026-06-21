@@ -34,6 +34,7 @@ class Predictor:
         self.max_tokens = max_tokens
 
         from flashllm.models.flash_llm import FlashLLM
+
         flash = FlashLLM(model_id, torch_dtype=torch_dtype, device_map=device)
         self.model = flash.model
         self.tokenizer = flash.tokenizer
@@ -82,7 +83,7 @@ class Predictor:
         }
 
         output_ids = self.model.generate(**inputs, **gen_kwargs)
-        new_tokens = output_ids[0, inputs["input_ids"].shape[1]:]
+        new_tokens = output_ids[0, inputs["input_ids"].shape[1] :]
         return self.tokenizer.decode(new_tokens, skip_special_tokens=True)
 
     @torch.inference_mode()
@@ -142,6 +143,7 @@ class Predictor:
         }
 
         import threading
+
         thread = threading.Thread(target=self.model.generate, kwargs={**inputs, **gen_kwargs})
         thread.start()
 

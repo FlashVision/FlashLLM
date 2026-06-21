@@ -37,6 +37,7 @@ class Chatbot:
     def predictor(self):
         if self._predictor is None:
             from flashllm.engine.predictor import Predictor
+
             self._predictor = Predictor(model_id=self.model_id, device=self.device)
         return self._predictor
 
@@ -47,7 +48,7 @@ class Chatbot:
         response = self.predictor.chat(messages, max_tokens=self.max_tokens, temperature=self.temperature)
         self.history.append({"role": "assistant", "content": response})
         if len(self.history) > self.max_history * 2:
-            self.history = self.history[-(self.max_history * 2):]
+            self.history = self.history[-(self.max_history * 2) :]
         return response
 
     def reset(self):

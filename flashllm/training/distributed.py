@@ -33,6 +33,7 @@ class FSDPConfig:
         forward_prefetch: Enable forward prefetch for pipelining.
         limit_all_gathers: Rate-limit all-gather communication.
     """
+
     sharding_strategy: str = "FULL_SHARD"
     cpu_offload: bool = False
     mixed_precision: Optional[str] = "bf16"
@@ -135,6 +136,7 @@ def wrap_with_fsdp(
             CheckpointImpl,
             apply_activation_checkpointing,
         )
+
         non_reentrant_wrapper = partial(
             checkpoint_wrapper,
             checkpoint_impl=CheckpointImpl.NO_REENTRANT,
@@ -148,7 +150,10 @@ def wrap_with_fsdp(
     rank = int(os.environ.get("RANK", 0))
     logger.info(
         "[Rank %d] FSDP wrapped: strategy=%s, mixed_precision=%s, checkpointing=%s",
-        rank, config.sharding_strategy, config.mixed_precision, config.activation_checkpointing,
+        rank,
+        config.sharding_strategy,
+        config.mixed_precision,
+        config.activation_checkpointing,
     )
     return wrapped
 
@@ -172,6 +177,7 @@ class DeepSpeedConfig:
         train_micro_batch_size_per_gpu: Micro-batch size.
         gradient_clipping: Maximum gradient norm.
     """
+
     stage: int = 2
     offload_optimizer: bool = False
     offload_params: bool = False
@@ -206,10 +212,12 @@ def get_deepspeed_config(config: Optional[DeepSpeedConfig] = None) -> Dict[str, 
     }
 
     if config.stage == 3:
-        zero_config.update({
-            "stage3_prefetch_bucket_size": config.stage3_prefetch_bucket_size,
-            "stage3_param_persistence_threshold": config.stage3_param_persistence_threshold,
-        })
+        zero_config.update(
+            {
+                "stage3_prefetch_bucket_size": config.stage3_prefetch_bucket_size,
+                "stage3_param_persistence_threshold": config.stage3_param_persistence_threshold,
+            }
+        )
 
     if config.offload_optimizer:
         zero_config["offload_optimizer"] = {
@@ -298,7 +306,8 @@ def setup_distributed(backend: str = "nccl"):
             torch.cuda.set_device(local_rank)
         logger.info(
             "Distributed initialized: rank=%s, world_size=%s",
-            os.environ.get("RANK", 0), os.environ.get("WORLD_SIZE", 1),
+            os.environ.get("RANK", 0),
+            os.environ.get("WORLD_SIZE", 1),
         )
 
 

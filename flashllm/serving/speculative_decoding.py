@@ -20,6 +20,7 @@ logger = get_logger(__name__)
 @dataclass
 class TokenNode:
     """Node in a speculative token tree."""
+
     token_id: int
     log_prob: float
     depth: int
@@ -164,7 +165,9 @@ class SpeculativeDecoder:
             draft_ids, draft_log_probs = self._draft_step(generated, k)
 
             num_accepted, next_token = self._verify_step(
-                generated, draft_ids, draft_log_probs,
+                generated,
+                draft_ids,
+                draft_log_probs,
             )
 
             self.total_draft_tokens += k
@@ -172,13 +175,15 @@ class SpeculativeDecoder:
 
             if num_accepted > 0:
                 generated = torch.cat(
-                    [generated, draft_ids[:, :num_accepted]], dim=-1,
+                    [generated, draft_ids[:, :num_accepted]],
+                    dim=-1,
                 )
                 num_generated += num_accepted
 
             if next_token is not None:
                 generated = torch.cat(
-                    [generated, next_token.unsqueeze(0).unsqueeze(0)], dim=-1,
+                    [generated, next_token.unsqueeze(0).unsqueeze(0)],
+                    dim=-1,
                 )
                 num_generated += 1
 
@@ -247,7 +252,7 @@ class SpeculativeDecoder:
 
         outputs = self.target_model(verification_input)
         logits = outputs.logits if hasattr(outputs, "logits") else outputs
-        target_logits = logits[:, -(k + 1):, :] / max(self.temperature, 1e-7)
+        target_logits = logits[:, -(k + 1) :, :] / max(self.temperature, 1e-7)
         target_log_probs = F.log_softmax(target_logits, dim=-1)
 
         num_accepted = 0
@@ -263,7 +268,8 @@ class SpeculativeDecoder:
                 num_accepted += 1
             else:
                 adjusted_probs = torch.clamp(
-                    target_log_probs[0, i].exp() - draft_log_probs[0, i].exp().unsqueeze(-1).expand_as(target_log_probs[0, i].exp()),
+                    target_log_probs[0, i].exp()
+                    - draft_log_probs[0, i].exp().unsqueeze(-1).expand_as(target_log_probs[0, i].exp()),
                     min=0,
                 )
                 adjusted_probs = adjusted_probs / (adjusted_probs.sum() + 1e-10)

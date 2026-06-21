@@ -144,11 +144,12 @@ class MoELayer(nn.Module):
         self.load_balance_weight = load_balance_weight
 
         self.router = TopKRouter(
-            hidden_size, num_experts, top_k, jitter_noise=jitter_noise,
+            hidden_size,
+            num_experts,
+            top_k,
+            jitter_noise=jitter_noise,
         )
-        self.experts = nn.ModuleList([
-            Expert(hidden_size, intermediate_size) for _ in range(num_experts)
-        ])
+        self.experts = nn.ModuleList([Expert(hidden_size, intermediate_size) for _ in range(num_experts)])
 
     def forward(self, x: torch.Tensor) -> Tuple[torch.Tensor, torch.Tensor]:
         """Forward pass through the MoE layer.
@@ -241,8 +242,11 @@ class MoETransformerBlock(nn.Module):
         residual = x
         x = self.attention_norm(x)
         attn_output, present_kv = self.attention(
-            x, attention_mask=attention_mask, position_ids=position_ids,
-            past_key_value=past_key_value, use_cache=use_cache,
+            x,
+            attention_mask=attention_mask,
+            position_ids=position_ids,
+            past_key_value=past_key_value,
+            use_cache=use_cache,
         )
         x = residual + self.dropout(attn_output)
 

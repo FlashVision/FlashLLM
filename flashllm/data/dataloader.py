@@ -1,6 +1,5 @@
 """DataLoader utilities for LLM training."""
 
-
 from torch.utils.data import DataLoader, Dataset, random_split
 
 
@@ -83,9 +82,7 @@ def create_train_val_loaders(
     """
     train_dataset, val_dataset = split_dataset(dataset, val_split, seed)
 
-    train_loader = create_dataloader(
-        train_dataset, batch_size=batch_size, shuffle=True, num_workers=num_workers
-    )
+    train_loader = create_dataloader(train_dataset, batch_size=batch_size, shuffle=True, num_workers=num_workers)
     val_loader = create_dataloader(
         val_dataset, batch_size=batch_size, shuffle=False, num_workers=num_workers, drop_last=False
     )

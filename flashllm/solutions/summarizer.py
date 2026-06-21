@@ -13,8 +13,13 @@ class Summarizer:
         temperature: Sampling temperature.
     """
 
-    def __init__(self, model_id: str = "meta-llama/Llama-3.1-8B-Instruct", device: str = "cuda",
-                 max_tokens: int = 256, temperature: float = 0.3):
+    def __init__(
+        self,
+        model_id: str = "meta-llama/Llama-3.1-8B-Instruct",
+        device: str = "cuda",
+        max_tokens: int = 256,
+        temperature: float = 0.3,
+    ):
         self.model_id = model_id
         self.device = device
         self.max_tokens = max_tokens
@@ -25,6 +30,7 @@ class Summarizer:
     def predictor(self):
         if self._predictor is None:
             from flashllm.engine.predictor import Predictor
+
             self._predictor = Predictor(model_id=self.model_id, device=self.device)
         return self._predictor
 

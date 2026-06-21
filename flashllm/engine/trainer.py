@@ -112,7 +112,7 @@ class Trainer:
 
         trainable = sum(p.numel() for p in self.model.parameters() if p.requires_grad)
         total = sum(p.numel() for p in self.model.parameters())
-        logger.info(f"Trainable params: {trainable:,} / {total:,} ({100*trainable/total:.2f}%)")
+        logger.info(f"Trainable params: {trainable:,} / {total:,} ({100 * trainable / total:.2f}%)")
 
     def _setup_data(self):
         """Create train and validation dataloaders."""
@@ -183,7 +183,7 @@ class Trainer:
             epoch_loss = 0.0
             self._run_callbacks("on_epoch_start", epoch=epoch)
 
-            pbar = tqdm(self.train_loader, desc=f"Epoch {epoch+1}/{self.cfg.train.epochs}")
+            pbar = tqdm(self.train_loader, desc=f"Epoch {epoch + 1}/{self.cfg.train.epochs}")
             for step, batch in enumerate(pbar):
                 batch = {k: v.to(self.device) for k, v in batch.items()}
 
@@ -218,7 +218,7 @@ class Trainer:
                     self._save_checkpoint(save_dir / f"step_{self.global_step}")
 
             avg_loss = epoch_loss / len(self.train_loader)
-            logger.info(f"Epoch {epoch+1} — avg loss: {avg_loss:.4f}")
+            logger.info(f"Epoch {epoch + 1} — avg loss: {avg_loss:.4f}")
             self._run_callbacks("on_epoch_end", epoch=epoch, loss=avg_loss)
 
             if avg_loss < self.best_loss:
@@ -233,6 +233,7 @@ class Trainer:
         """Compute loss based on training method."""
         if self.cfg.train.method == "dpo":
             from flashllm.losses.dpo_loss import dpo_loss
+
             return dpo_loss(self.model, batch, beta=self.cfg.dpo.beta)
 
         outputs = self.model(

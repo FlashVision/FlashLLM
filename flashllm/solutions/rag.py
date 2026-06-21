@@ -16,9 +16,14 @@ class RAG:
         top_k: Number of documents to retrieve.
     """
 
-    def __init__(self, model_id: str = "meta-llama/Llama-3.1-8B-Instruct",
-                 embedding_model: str = "sentence-transformers/all-MiniLM-L6-v2",
-                 device: str = "cuda", max_tokens: int = 512, top_k: int = 3):
+    def __init__(
+        self,
+        model_id: str = "meta-llama/Llama-3.1-8B-Instruct",
+        embedding_model: str = "sentence-transformers/all-MiniLM-L6-v2",
+        device: str = "cuda",
+        max_tokens: int = 512,
+        top_k: int = 3,
+    ):
         self.model_id = model_id
         self.embedding_model_name = embedding_model
         self.device = device
@@ -33,6 +38,7 @@ class RAG:
     def predictor(self):
         if self._predictor is None:
             from flashllm.engine.predictor import Predictor
+
             self._predictor = Predictor(model_id=self.model_id, device=self.device)
         return self._predictor
 
@@ -41,6 +47,7 @@ class RAG:
         if self._embedder is None:
             try:
                 from sentence_transformers import SentenceTransformer
+
                 self._embedder = SentenceTransformer(self.embedding_model_name, device=self.device)
             except ImportError:
                 raise ImportError("RAG requires: pip install 'flashllm[rag]'")
@@ -49,6 +56,7 @@ class RAG:
     def add_documents(self, documents: List[str]):
         """Add documents to the vector store."""
         import numpy as np
+
         try:
             import faiss
         except ImportError:
@@ -68,7 +76,7 @@ class RAG:
         """Query the RAG system with a question."""
         k = top_k or self.top_k
         retrieved = self.retrieve(question, top_k=k)
-        context = "\n\n".join([f"Document {i+1}:\n{doc}" for i, (doc, _) in enumerate(retrieved)])
+        context = "\n\n".join([f"Document {i + 1}:\n{doc}" for i, (doc, _) in enumerate(retrieved)])
         prompt = f"Answer using the context.\n\nContext:\n{context}\n\nQuestion: {question}\n\nAnswer:"
         return self.predictor.generate(prompt, max_tokens=self.max_tokens, temperature=0.3)
 

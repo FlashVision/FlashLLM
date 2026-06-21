@@ -7,6 +7,7 @@ from typing import Dict, List, Optional
 @dataclass
 class ModelConfig:
     """Model configuration."""
+
     model_id: str = "meta-llama/Llama-3.1-8B"
     torch_dtype: str = "bfloat16"
     attn_implementation: str = "flash_attention_2"
@@ -18,6 +19,7 @@ class ModelConfig:
 @dataclass
 class DataConfig:
     """Dataset configuration."""
+
     dataset_path: str = "data/instructions.jsonl"
     dataset_format: str = "alpaca"
     template: str = "llama"
@@ -29,6 +31,7 @@ class DataConfig:
 @dataclass
 class TrainConfig:
     """Training hyperparameters."""
+
     method: str = "sft"
     epochs: int = 3
     batch_size: int = 4
@@ -50,6 +53,7 @@ class TrainConfig:
 @dataclass
 class LoRAConfig:
     """LoRA fine-tuning configuration."""
+
     rank: int = 16
     alpha: float = 32.0
     dropout: float = 0.05
@@ -63,6 +67,7 @@ class LoRAConfig:
 @dataclass
 class DPOConfig:
     """DPO training configuration."""
+
     beta: float = 0.1
     loss_type: str = "sigmoid"
     reference_free: bool = False
@@ -72,6 +77,7 @@ class DPOConfig:
 @dataclass
 class GenerationConfig:
     """Text generation configuration."""
+
     max_new_tokens: int = 512
     temperature: float = 0.7
     top_p: float = 0.9
@@ -84,6 +90,7 @@ class GenerationConfig:
 @dataclass
 class Config:
     """Top-level configuration."""
+
     model: ModelConfig = field(default_factory=ModelConfig)
     data: DataConfig = field(default_factory=DataConfig)
     train: TrainConfig = field(default_factory=TrainConfig)

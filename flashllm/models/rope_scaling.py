@@ -95,8 +95,7 @@ class DynamicNTKScaledRoPE(nn.Module):
 
             if seq_len > self.max_position:
                 new_base = self.base * (
-                    (self.scaling_factor * seq_len / self.max_position)
-                    - (self.scaling_factor - 1)
+                    (self.scaling_factor * seq_len / self.max_position) - (self.scaling_factor - 1)
                 ) ** (self.dim / (self.dim - 2))
                 inv_freq = 1.0 / (new_base ** (torch.arange(0, self.dim, 2, device=x.device).float() / self.dim))
             else:
@@ -169,7 +168,7 @@ class YaRNScaledRoPE(nn.Module):
 
         inv_freq_mask = torch.ones(dim // 2)
         if low != high:
-            inv_freq_mask[int(low):int(high) + 1] = torch.linspace(1, 0, int(high) - int(low) + 1)
+            inv_freq_mask[int(low) : int(high) + 1] = torch.linspace(1, 0, int(high) - int(low) + 1)
 
         inv_freq = freq_inter * (1 - inv_freq_mask) + freq_extra * inv_freq_mask
         self.register_buffer("inv_freq", inv_freq, persistent=False)

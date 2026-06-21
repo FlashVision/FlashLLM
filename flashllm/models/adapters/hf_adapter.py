@@ -1,6 +1,5 @@
 """HuggingFace model adapter — unified loading for any AutoModelForCausalLM."""
 
-
 import torch
 from transformers import AutoModelForCausalLM, AutoTokenizer
 
@@ -27,7 +26,9 @@ class HuggingFaceAdapter:
         "qwen": ["Qwen"],
     }
 
-    def __init__(self, model_id: str, torch_dtype: str = "auto", device_map: str = "auto", trust_remote_code: bool = False):
+    def __init__(
+        self, model_id: str, torch_dtype: str = "auto", device_map: str = "auto", trust_remote_code: bool = False
+    ):
         self.model_id = model_id
         self.torch_dtype = torch_dtype
         self.device_map = device_map
@@ -46,7 +47,11 @@ class HuggingFaceAdapter:
         dtype_map = {"float32": torch.float32, "float16": torch.float16, "bfloat16": torch.bfloat16, "auto": "auto"}
         dtype = dtype_map.get(self.torch_dtype, "auto")
         return AutoModelForCausalLM.from_pretrained(
-            self.model_id, torch_dtype=dtype, device_map=self.device_map, trust_remote_code=self.trust_remote_code, **kwargs
+            self.model_id,
+            torch_dtype=dtype,
+            device_map=self.device_map,
+            trust_remote_code=self.trust_remote_code,
+            **kwargs,
         )
 
     def load_tokenizer(self) -> AutoTokenizer:

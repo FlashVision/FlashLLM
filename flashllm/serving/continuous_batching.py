@@ -37,6 +37,7 @@ class SequenceRequest:
         top_k: Top-k sampling bound.
         stop_token_ids: Token IDs that stop generation.
     """
+
     request_id: int
     prompt_token_ids: List[int]
     max_tokens: int = 256
@@ -76,6 +77,7 @@ class SequenceRequest:
 @dataclass
 class SchedulerOutput:
     """Result of a scheduling decision for one iteration."""
+
     prefill_requests: List[SequenceRequest]
     decode_requests: List[SequenceRequest]
     preempted_requests: List[SequenceRequest]

@@ -10,6 +10,7 @@ import torch.nn.functional as F
 @dataclass
 class BeamHypothesis:
     """A single beam search hypothesis."""
+
     tokens: List[int] = field(default_factory=list)
     score: float = 0.0
     is_finished: bool = False
@@ -93,12 +94,14 @@ class BeamSearch:
 
                 if token_id == self.eos_token_id:
                     length = new_ids.shape[0] - input_ids.shape[1]
-                    adjusted_score = score.item() / (length ** self.length_penalty)
-                    finished_beams.append(BeamHypothesis(
-                        tokens=new_ids[input_ids.shape[1]:].tolist(),
-                        score=adjusted_score,
-                        is_finished=True,
-                    ))
+                    adjusted_score = score.item() / (length**self.length_penalty)
+                    finished_beams.append(
+                        BeamHypothesis(
+                            tokens=new_ids[input_ids.shape[1] :].tolist(),
+                            score=adjusted_score,
+                            is_finished=True,
+                        )
+                    )
                 else:
                     new_beam_input_ids.append(new_ids)
                     new_beam_scores.append(score)
@@ -115,12 +118,14 @@ class BeamSearch:
 
         for i in range(beam_input_ids.shape[0]):
             length = beam_input_ids.shape[1] - input_ids.shape[1]
-            adjusted_score = beam_scores[i].item() / (length ** self.length_penalty)
-            finished_beams.append(BeamHypothesis(
-                tokens=beam_input_ids[i, input_ids.shape[1]:].tolist(),
-                score=adjusted_score,
-                is_finished=True,
-            ))
+            adjusted_score = beam_scores[i].item() / (length**self.length_penalty)
+            finished_beams.append(
+                BeamHypothesis(
+                    tokens=beam_input_ids[i, input_ids.shape[1] :].tolist(),
+                    score=adjusted_score,
+                    is_finished=True,
+                )
+            )
 
         finished_beams.sort(key=lambda h: h.score, reverse=True)
-        return finished_beams[:self.num_beams]
+        return finished_beams[: self.num_beams]

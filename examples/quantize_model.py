@@ -13,22 +13,21 @@ from flashllm.quantization import quantize_model
 def main():
     parser = argparse.ArgumentParser(description="Model quantization")
     parser.add_argument("--model", default="meta-llama/Llama-3.1-8B", help="Model ID to quantize")
-    parser.add_argument("--method", default="gptq", choices=["gptq", "awq", "bitsandbytes"],
-                        help="Quantization method")
+    parser.add_argument("--method", default="gptq", choices=["gptq", "awq", "bitsandbytes"], help="Quantization method")
     parser.add_argument("--bits", type=int, default=4, choices=[4, 8], help="Quantization bits")
     parser.add_argument("--output", default=None, help="Output directory")
     args = parser.parse_args()
 
     output_dir = args.output or f"{args.model.split('/')[-1]}-{args.method}-{args.bits}bit"
 
-    print(f"\n{'='*50}")
+    print(f"\n{'=' * 50}")
     print(f"  FlashLLM — Model Quantization")
-    print(f"{'='*50}")
+    print(f"{'=' * 50}")
     print(f"  Model:   {args.model}")
     print(f"  Method:  {args.method}")
     print(f"  Bits:    {args.bits}")
     print(f"  Output:  {output_dir}")
-    print(f"{'='*50}\n")
+    print(f"{'=' * 50}\n")
 
     result_path = quantize_model(
         model_id=args.model,

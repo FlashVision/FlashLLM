@@ -23,13 +23,13 @@ def main():
     parser.add_argument("--stream", action="store_true", help="Stream output token by token")
     args = parser.parse_args()
 
-    print(f"\n{'='*50}")
+    print(f"\n{'=' * 50}")
     print(f"  FlashLLM — Text Generation")
-    print(f"{'='*50}")
+    print(f"{'=' * 50}")
     print(f"  Model:       {args.model}")
     print(f"  Temperature: {args.temperature}")
     print(f"  Top-p:       {args.top_p}")
-    print(f"{'='*50}\n")
+    print(f"{'=' * 50}\n")
 
     predictor = Predictor(model_id=args.model, device=args.device)
 

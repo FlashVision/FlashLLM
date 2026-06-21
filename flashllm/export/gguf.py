@@ -22,6 +22,7 @@ GGUF_VERSION = 3
 
 class GGMLType(IntEnum):
     """GGML quantization types."""
+
     F32 = 0
     F16 = 1
     Q4_0 = 2
@@ -101,7 +102,7 @@ def _quantize_q4_0(tensor: torch.Tensor) -> bytes:
 
     result = bytearray()
     for i in range(n_blocks):
-        block = padded[i * block_size:(i + 1) * block_size]
+        block = padded[i * block_size : (i + 1) * block_size]
         abs_max = np.max(np.abs(block))
         scale = abs_max / 7.0 if abs_max > 0 else 0.0
 
@@ -134,7 +135,7 @@ def _quantize_q8_0(tensor: torch.Tensor) -> bytes:
 
     result = bytearray()
     for i in range(n_blocks):
-        block = padded[i * block_size:(i + 1) * block_size]
+        block = padded[i * block_size : (i + 1) * block_size]
         abs_max = np.max(np.abs(block))
         scale = abs_max / 127.0 if abs_max > 0 else 0.0
 
@@ -309,8 +310,10 @@ def export_to_gguf(
     writer.add_uint32(f"{arch}.embedding_length", getattr(config, "hidden_size", 4096))
     writer.add_uint32(f"{arch}.block_count", getattr(config, "num_hidden_layers", 32))
     writer.add_uint32(f"{arch}.attention.head_count", getattr(config, "num_attention_heads", 32))
-    writer.add_uint32(f"{arch}.attention.head_count_kv",
-                      getattr(config, "num_key_value_heads", getattr(config, "num_attention_heads", 32)))
+    writer.add_uint32(
+        f"{arch}.attention.head_count_kv",
+        getattr(config, "num_key_value_heads", getattr(config, "num_attention_heads", 32)),
+    )
     writer.add_uint32(f"{arch}.feed_forward_length", getattr(config, "intermediate_size", 11008))
     writer.add_uint32(f"{arch}.context_length", getattr(config, "max_position_embeddings", 4096))
     writer.add_uint32(f"{arch}.vocab_size", getattr(config, "vocab_size", 32000))

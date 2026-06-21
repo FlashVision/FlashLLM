@@ -24,15 +24,15 @@ def main():
     parser.add_argument("--merge", action="store_true", help="Merge LoRA weights after training")
     args = parser.parse_args()
 
-    print(f"\n{'='*50}")
+    print(f"\n{'=' * 50}")
     print(f"  FlashLLM — LoRA Fine-Tuning")
-    print(f"{'='*50}")
+    print(f"{'=' * 50}")
     print(f"  Model:     {args.model}")
     print(f"  Dataset:   {args.dataset}")
     print(f"  LoRA rank: {args.lora_rank}")
     print(f"  Epochs:    {args.epochs}")
     print(f"  LR:        {args.lr}")
-    print(f"{'='*50}\n")
+    print(f"{'=' * 50}\n")
 
     trainer = Trainer(
         model_id=args.model,

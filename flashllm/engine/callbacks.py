@@ -104,6 +104,7 @@ class WandBCallback(Callback):
     def on_train_start(self, **kwargs):
         try:
             import wandb
+
             self._run = wandb.init(project=self.project, name=self.run_name)
         except ImportError:
             logger.warning("wandb not installed. Skipping WandB logging.")
@@ -111,12 +112,16 @@ class WandBCallback(Callback):
     def on_epoch_end(self, **kwargs):
         if self._run:
             import wandb
-            wandb.log({
-                "epoch": kwargs.get("epoch", 0),
-                "loss": kwargs.get("loss", 0.0),
-            })
+
+            wandb.log(
+                {
+                    "epoch": kwargs.get("epoch", 0),
+                    "loss": kwargs.get("loss", 0.0),
+                }
+            )
 
     def on_train_end(self, **kwargs):
         if self._run:
             import wandb
+
             wandb.finish()

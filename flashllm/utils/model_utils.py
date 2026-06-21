@@ -68,7 +68,7 @@ def estimate_memory(
     if gradient_checkpointing:
         gradient_memory_gb *= 0.3
 
-    activation_memory_gb = (batch_size * seq_length * num_params * 0.00001)
+    activation_memory_gb = batch_size * seq_length * num_params * 0.00001
 
     total_training_gb = model_memory_gb + optimizer_memory_gb + gradient_memory_gb + activation_memory_gb
     total_inference_gb = model_memory_gb * 1.2

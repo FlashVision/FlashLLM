@@ -45,7 +45,7 @@ class HQQQuantizer:
         self.num_iters = num_iters
         self.axis = axis
         self.lp_norm = lp_norm
-        self.max_int = 2 ** bits - 1
+        self.max_int = 2**bits - 1
 
     def quantize(self, weight: torch.Tensor) -> Dict[str, torch.Tensor]:
         """Quantize a weight matrix using HQQ.
@@ -185,7 +185,8 @@ class HQQLinear(nn.Module):
 
         self._quantized: Optional[Dict[str, torch.Tensor]] = None
         self._weight_placeholder = nn.Parameter(
-            torch.empty(0), requires_grad=False,
+            torch.empty(0),
+            requires_grad=False,
         )
         if bias:
             self.bias = nn.Parameter(torch.zeros(out_features))
@@ -197,8 +198,11 @@ class HQQLinear(nn.Module):
         """Create an HQQLinear from an existing nn.Linear."""
         has_bias = linear.bias is not None
         hqq = cls(
-            linear.in_features, linear.out_features,
-            bits=bits, group_size=group_size, bias=has_bias,
+            linear.in_features,
+            linear.out_features,
+            bits=bits,
+            group_size=group_size,
+            bias=has_bias,
         )
         hqq.quantize_weight(linear.weight.data)
         if has_bias:
@@ -213,10 +217,7 @@ class HQQLinear(nn.Module):
 
     def forward(self, x: torch.Tensor) -> torch.Tensor:
         if self._quantized is None:
-            self._quantized = {
-                k.replace("hqq_", ""): getattr(self, k)
-                for k in dir(self) if k.startswith("hqq_")
-            }
+            self._quantized = {k.replace("hqq_", ""): getattr(self, k) for k in dir(self) if k.startswith("hqq_")}
 
         weight = self.quantizer.dequantize(self._quantized).to(x.dtype)
         output = torch.nn.functional.linear(x, weight, self.bias)

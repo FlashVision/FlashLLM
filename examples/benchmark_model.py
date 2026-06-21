@@ -20,14 +20,14 @@ def main():
     parser.add_argument("--warmup", type=int, default=2, help="Warmup runs")
     args = parser.parse_args()
 
-    print(f"\n{'='*50}")
+    print(f"\n{'=' * 50}")
     print(f"  FlashLLM — Model Benchmark")
-    print(f"{'='*50}")
+    print(f"{'=' * 50}")
     print(f"  Model:      {args.model}")
     print(f"  Device:     {args.device}")
     print(f"  Runs:       {args.num_runs}")
     print(f"  Max tokens: {args.max_tokens}")
-    print(f"{'='*50}\n")
+    print(f"{'=' * 50}\n")
 
     bench = Benchmark(model_id=args.model, device=args.device)
     results = bench.run(
@@ -37,15 +37,15 @@ def main():
         warmup_runs=args.warmup,
     )
 
-    print(f"\n{'='*50}")
+    print(f"\n{'=' * 50}")
     print(f"  Results")
-    print(f"{'='*50}")
+    print(f"{'=' * 50}")
     print(f"  Tokens/sec:     {results['tokens_per_sec']:.1f}")
     print(f"  Latency (ms):   {results['latency_ms']:.1f}")
     print(f"  Memory (MB):    {results['memory_mb']:.0f}")
     print(f"  Parameters:     {results['params']:,}")
     print(f"  Model size:     {results['params_gb']:.2f} GB")
-    print(f"{'='*50}\n")
+    print(f"{'=' * 50}\n")
 
 
 if __name__ == "__main__":

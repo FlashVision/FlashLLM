@@ -17,6 +17,7 @@ logger = get_logger(__name__)
 @dataclass
 class EvalResult:
     """Result of an evaluation task."""
+
     task_name: str
     score: float
     num_samples: int
@@ -61,26 +62,63 @@ class MMLUTask(EvalTask):
     name = "mmlu"
 
     SUBJECTS = [
-        "abstract_algebra", "anatomy", "astronomy", "business_ethics",
-        "clinical_knowledge", "college_biology", "college_chemistry",
-        "college_computer_science", "college_mathematics", "college_medicine",
-        "college_physics", "computer_security", "conceptual_physics",
-        "econometrics", "electrical_engineering", "elementary_mathematics",
-        "formal_logic", "global_facts", "high_school_biology",
-        "high_school_chemistry", "high_school_computer_science",
-        "high_school_european_history", "high_school_geography",
-        "high_school_government_and_politics", "high_school_macroeconomics",
-        "high_school_mathematics", "high_school_microeconomics",
-        "high_school_physics", "high_school_psychology",
-        "high_school_statistics", "high_school_us_history",
-        "high_school_world_history", "human_aging", "human_sexuality",
-        "international_law", "jurisprudence", "logical_fallacies",
-        "machine_learning", "management", "marketing", "medical_genetics",
-        "miscellaneous", "moral_disputes", "moral_scenarios", "nutrition",
-        "philosophy", "prehistory", "professional_accounting",
-        "professional_law", "professional_medicine", "professional_psychology",
-        "public_relations", "security_studies", "sociology",
-        "us_foreign_policy", "virology", "world_religions",
+        "abstract_algebra",
+        "anatomy",
+        "astronomy",
+        "business_ethics",
+        "clinical_knowledge",
+        "college_biology",
+        "college_chemistry",
+        "college_computer_science",
+        "college_mathematics",
+        "college_medicine",
+        "college_physics",
+        "computer_security",
+        "conceptual_physics",
+        "econometrics",
+        "electrical_engineering",
+        "elementary_mathematics",
+        "formal_logic",
+        "global_facts",
+        "high_school_biology",
+        "high_school_chemistry",
+        "high_school_computer_science",
+        "high_school_european_history",
+        "high_school_geography",
+        "high_school_government_and_politics",
+        "high_school_macroeconomics",
+        "high_school_mathematics",
+        "high_school_microeconomics",
+        "high_school_physics",
+        "high_school_psychology",
+        "high_school_statistics",
+        "high_school_us_history",
+        "high_school_world_history",
+        "human_aging",
+        "human_sexuality",
+        "international_law",
+        "jurisprudence",
+        "logical_fallacies",
+        "machine_learning",
+        "management",
+        "marketing",
+        "medical_genetics",
+        "miscellaneous",
+        "moral_disputes",
+        "moral_scenarios",
+        "nutrition",
+        "philosophy",
+        "prehistory",
+        "professional_accounting",
+        "professional_law",
+        "professional_medicine",
+        "professional_psychology",
+        "public_relations",
+        "security_studies",
+        "sociology",
+        "us_foreign_policy",
+        "virology",
+        "world_religions",
     ]
 
     CHOICES = ["A", "B", "C", "D"]
@@ -99,17 +137,20 @@ class MMLUTask(EvalTask):
         """Load MMLU samples from HuggingFace datasets or local CSV."""
         try:
             from datasets import load_dataset
+
             subjects = self.SUBJECTS if self.subject == "all" else [self.subject]
             samples = []
             for subj in subjects:
                 ds = load_dataset("cais/mmlu", subj, split="test")
                 for item in ds:
-                    samples.append({
-                        "subject": subj,
-                        "question": item["question"],
-                        "choices": item["choices"],
-                        "answer": self.CHOICES[item["answer"]],
-                    })
+                    samples.append(
+                        {
+                            "subject": subj,
+                            "question": item["question"],
+                            "choices": item["choices"],
+                            "answer": self.CHOICES[item["answer"]],
+                        }
+                    )
                     if num_samples and len(samples) >= num_samples:
                         return samples
             return samples[:num_samples] if num_samples else samples
@@ -120,12 +161,14 @@ class MMLUTask(EvalTask):
     def _synthetic_samples(self, n: int) -> List[Dict[str, Any]]:
         samples = []
         for i in range(n):
-            samples.append({
-                "subject": "test",
-                "question": f"Sample question {i}?",
-                "choices": [f"Option {c}" for c in self.CHOICES],
-                "answer": self.CHOICES[i % 4],
-            })
+            samples.append(
+                {
+                    "subject": "test",
+                    "question": f"Sample question {i}?",
+                    "choices": [f"Option {c}" for c in self.CHOICES],
+                    "answer": self.CHOICES[i % 4],
+                }
+            )
         return samples
 
     def format_prompt(self, sample: Dict[str, Any]) -> str:
@@ -142,7 +185,7 @@ class MMLUTask(EvalTask):
         expected = sample["answer"]
         if output.startswith(expected):
             return True
-        match = re.search(r'\b([A-D])\b', output)
+        match = re.search(r"\b([A-D])\b", output)
         return match is not None and match.group(1) == expected
 
 
@@ -164,16 +207,19 @@ class HumanEvalTask(EvalTask):
     def load_samples(self, num_samples: Optional[int] = None) -> List[Dict[str, Any]]:
         try:
             from datasets import load_dataset
+
             ds = load_dataset("openai_humaneval", split="test")
             samples = []
             for item in ds:
-                samples.append({
-                    "task_id": item["task_id"],
-                    "prompt": item["prompt"],
-                    "canonical_solution": item["canonical_solution"],
-                    "test": item["test"],
-                    "entry_point": item["entry_point"],
-                })
+                samples.append(
+                    {
+                        "task_id": item["task_id"],
+                        "prompt": item["prompt"],
+                        "canonical_solution": item["canonical_solution"],
+                        "test": item["test"],
+                        "entry_point": item["entry_point"],
+                    }
+                )
                 if num_samples and len(samples) >= num_samples:
                     break
             return samples
@@ -184,13 +230,15 @@ class HumanEvalTask(EvalTask):
     def _synthetic_samples(self, n: int) -> List[Dict[str, Any]]:
         samples = []
         for i in range(n):
-            samples.append({
-                "task_id": f"test/{i}",
-                "prompt": f"def solution_{i}(x: int) -> int:\n    \"\"\"Return x + {i}.\"\"\"\n",
-                "canonical_solution": f"    return x + {i}\n",
-                "test": f"assert solution_{i}({i}) == {2*i}\n",
-                "entry_point": f"solution_{i}",
-            })
+            samples.append(
+                {
+                    "task_id": f"test/{i}",
+                    "prompt": f'def solution_{i}(x: int) -> int:\n    """Return x + {i}."""\n',
+                    "canonical_solution": f"    return x + {i}\n",
+                    "test": f"assert solution_{i}({i}) == {2 * i}\n",
+                    "entry_point": f"solution_{i}",
+                }
+            )
         return samples
 
     def format_prompt(self, sample: Dict[str, Any]) -> str:
@@ -221,8 +269,14 @@ class MTBenchTask(EvalTask):
     name = "mt_bench"
 
     CATEGORIES = [
-        "writing", "roleplay", "reasoning", "math",
-        "coding", "extraction", "stem", "humanities",
+        "writing",
+        "roleplay",
+        "reasoning",
+        "math",
+        "coding",
+        "extraction",
+        "stem",
+        "humanities",
     ]
 
     def __init__(self, categories: Optional[List[str]] = None):
@@ -232,15 +286,17 @@ class MTBenchTask(EvalTask):
         samples = []
         for i, cat in enumerate(self.categories):
             for j in range(10):
-                samples.append({
-                    "question_id": i * 10 + j,
-                    "category": cat,
-                    "turns": [
-                        f"[{cat}] Please help me with task {j}.",
-                        "Can you elaborate more on that?",
-                    ],
-                    "reference": None,
-                })
+                samples.append(
+                    {
+                        "question_id": i * 10 + j,
+                        "category": cat,
+                        "turns": [
+                            f"[{cat}] Please help me with task {j}.",
+                            "Can you elaborate more on that?",
+                        ],
+                        "reference": None,
+                    }
+                )
                 if num_samples and len(samples) >= num_samples:
                     return samples
         return samples[:num_samples] if num_samples else samples
@@ -347,7 +403,10 @@ class EvalHarness:
                 logger.warning("Task '%s' not registered, skipping", task_name)
                 continue
             result = self._run_task(
-                self._tasks[task_name], num_samples, max_new_tokens, temperature,
+                self._tasks[task_name],
+                num_samples,
+                max_new_tokens,
+                temperature,
             )
             results[task_name] = result
             logger.info("  %s: %.4f (%d/%d)", task_name, result.score, result.num_correct, result.num_samples)
@@ -405,7 +464,7 @@ class EvalHarness:
                     do_sample=temperature > 0,
                     temperature=max(temperature, 1e-7) if temperature > 0 else 1.0,
                 )
-            new_tokens = outputs[0, inputs["input_ids"].shape[1]:]
+            new_tokens = outputs[0, inputs["input_ids"].shape[1] :]
             return self.tokenizer.decode(new_tokens, skip_special_tokens=True)
 
         raise RuntimeError("Model must have a generate() method or tokenizer must be provided")
@@ -432,7 +491,10 @@ class EvalHarness:
 
         for text in texts:
             encodings = self.tokenizer(
-                text, return_tensors="pt", truncation=True, max_length=max_length,
+                text,
+                return_tensors="pt",
+                truncation=True,
+                max_length=max_length,
             ).to(self.device)
 
             input_ids = encodings["input_ids"]

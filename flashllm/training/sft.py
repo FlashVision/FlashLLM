@@ -125,7 +125,9 @@ class SFTTrainer:
 
         for batch in self.val_dataloader:
             batch = {k: v.to(next(self.model.parameters()).device) for k, v in batch.items()}
-            outputs = self.model(input_ids=batch["input_ids"], attention_mask=batch["attention_mask"], labels=batch["labels"])
+            outputs = self.model(
+                input_ids=batch["input_ids"], attention_mask=batch["attention_mask"], labels=batch["labels"]
+            )
             num_tokens = (batch["labels"] != -100).sum().item()
             total_loss += outputs.loss.item() * num_tokens
             total_tokens += num_tokens
