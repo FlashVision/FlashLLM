@@ -1,0 +1,69 @@
+[build-system]
+requires = ["setuptools>=70.0.0", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "flashllm"
+version = "1.0.0"
+description = "FlashLLM: Lightweight LLM inference and fine-tuning — LoRA, QLoRA, SFT, DPO, quantization for LLaMA, Mistral, Phi, Gemma, Qwen"
+readme = "README.md"
+requires-python = ">=3.9"
+license = {text = "MIT"}
+authors = [
+    {name = "FlashVision"},
+]
+keywords = ["llm", "large-language-model", "fine-tuning", "lora", "qlora", "sft", "dpo", "quantization", "gptq", "awq", "inference", "pytorch"]
+classifiers = [
+    "Development Status :: 4 - Beta",
+    "Intended Audience :: Developers",
+    "Intended Audience :: Science/Research",
+    "License :: OSI Approved :: MIT License",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.9",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Topic :: Scientific/Engineering :: Artificial Intelligence",
+    "Topic :: Text Processing :: Linguistic",
+]
+dependencies = [
+    "torch>=2.0.0",
+    "transformers>=4.36.0",
+    "tokenizers>=0.15.0",
+    "numpy>=1.24.0",
+    "PyYAML>=6.0",
+    "tqdm>=4.65.0",
+    "safetensors>=0.4.0",
+]
+
+[project.optional-dependencies]
+quantization = ["bitsandbytes>=0.41.0", "auto-gptq>=0.7.0", "autoawq>=0.2.0"]
+analytics = ["matplotlib>=3.7.0", "pandas>=2.0.0"]
+export = ["onnx>=1.14.0", "onnxruntime>=1.15.0"]
+rag = ["sentence-transformers>=2.2.0", "faiss-cpu>=1.7.4"]
+all = [
+    "bitsandbytes>=0.41.0",
+    "auto-gptq>=0.7.0",
+    "autoawq>=0.2.0",
+    "matplotlib>=3.7.0",
+    "pandas>=2.0.0",
+    "onnx>=1.14.0",
+    "onnxruntime>=1.15.0",
+    "sentence-transformers>=2.2.0",
+    "faiss-cpu>=1.7.4",
+]
+dev = ["pytest", "ruff", "pre-commit"]
+
+[project.urls]
+Homepage = "https://github.com/FlashVision/FlashLLM"
+Repository = "https://github.com/FlashVision/FlashLLM"
+Issues = "https://github.com/FlashVision/FlashLLM/issues"
+
+[project.scripts]
+flashllm = "flashllm.cli:main"
+
+[tool.setuptools.packages.find]
+include = ["flashllm*"]
+
+[tool.ruff]
+line-length = 120

@@ -1,0 +1,46 @@
+# FlashLLM — Phi-3 Mini Chat Fine-Tuning
+# Usage: flashllm train --config configs/flashllm_phi3_mini_chat.yaml
+
+model:
+  model_id: "microsoft/Phi-3-mini-4k-instruct"
+  torch_dtype: "bfloat16"
+  attn_implementation: "eager"
+  max_seq_length: 4096
+
+data:
+  dataset_path: "data/chat_conversations.jsonl"
+  dataset_format: "chatml"
+  template: "chatml"
+  val_split: 0.05
+  num_workers: 4
+
+train:
+  method: "lora"
+  epochs: 3
+  batch_size: 8
+  gradient_accumulation_steps: 2
+  learning_rate: 1.0e-4
+  weight_decay: 0.01
+  warmup_ratio: 0.03
+  lr_scheduler: "cosine"
+  max_grad_norm: 1.0
+  save_dir: "workspace/phi3_chat"
+  save_steps: 500
+  eval_steps: 250
+  logging_steps: 10
+  amp: true
+  gradient_checkpointing: true
+
+lora:
+  rank: 8
+  alpha: 16
+  dropout: 0.05
+  target_modules: ["q_proj", "k_proj", "v_proj", "o_proj"]
+  bias: "none"
+  task_type: "CAUSAL_LM"
+
+generation:
+  max_new_tokens: 1024
+  temperature: 0.7
+  top_p: 0.9
+  repetition_penalty: 1.05
